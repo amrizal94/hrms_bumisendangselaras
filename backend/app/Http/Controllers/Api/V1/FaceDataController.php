@@ -239,6 +239,16 @@ class FaceDataController extends Controller
             ], 422);
         }
 
+        // Early check: if the requesting user has no face enrolled, return friendly error
+        $userEmployee = $request->user()->employee;
+        if ($userEmployee && !FaceData::where('employee_id', $userEmployee->id)->where('is_active', true)->exists()) {
+            return response()->json([
+                'success'    => false,
+                'message'    => 'Wajah kamu belum terdaftar. Daftarkan wajah terlebih dahulu.',
+                'error_code' => 'face_not_enrolled',
+            ], 422);
+        }
+
         // Identify face
         $identifyResult = $this->identifyDescriptor($validated['descriptor']);
 
@@ -602,6 +612,9 @@ class FaceDataController extends Controller
     // All authenticated: self-enroll own face via descriptor (web/browser)
     // POST /face/self-enroll  { descriptor: [...128], snapshot?: base64 }
     // ---------------------------------------------------------------
+    // Re-enroll cooldown in days (prevents abuse / buddy-punching face swap)
+    private const REENROLL_COOLDOWN_DAYS = 30;
+
     public function selfEnroll(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -614,6 +627,21 @@ class FaceDataController extends Controller
 
         if (!$employee) {
             return response()->json(['success' => false, 'message' => 'Employee profile not found.'], 404);
+        }
+
+        // Cooldown check: allow first-time enroll freely; block re-enroll within cooldown period
+        $existing = FaceData::where('employee_id', $employee->id)->first();
+        if ($existing && $existing->enrolled_at) {
+            $daysSince = $existing->enrolled_at->diffInDays(now());
+            if ($daysSince < self::REENROLL_COOLDOWN_DAYS) {
+                $canAt = $existing->enrolled_at->addDays(self::REENROLL_COOLDOWN_DAYS);
+                return response()->json([
+                    'success'    => false,
+                    'message'    => 'Wajah sudah terdaftar. Kamu baru bisa mendaftar ulang pada ' . $canAt->translatedFormat('d F Y') . '.',
+                    'error_code' => 'reenroll_cooldown',
+                    'data'       => ['can_reenroll_at' => $canAt->toISOString()],
+                ], 429);
+            }
         }
 
         $imagePath = null;

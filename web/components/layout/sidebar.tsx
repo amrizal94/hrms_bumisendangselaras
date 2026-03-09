@@ -79,8 +79,9 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'My Leave',      href: '/staff/leave',         icon: CalendarDays,    roles: ['staff'],                                   group: 'My Work' },
   { label: 'My Overtime',   href: '/staff/overtime',      icon: Timer,           roles: ['staff'],                                   group: 'My Work' },
   { label: 'My Tasks',      href: '/staff/tasks',         icon: CheckSquare,     roles: ['staff'],                                   group: 'My Work' },
-  { label: 'My Shift',      href: '/staff/shift',         icon: AlarmClock,      roles: ['staff'],                                   group: 'My Work' },
-  { label: 'Holidays',      href: '/staff/holidays',      icon: CalendarDays,    roles: ['staff'],                                   group: 'My Work' },
+  { label: 'My Shift',        href: '/staff/shift',         icon: AlarmClock,      roles: ['staff'],                                   group: 'My Work' },
+  { label: 'Daftarkan Wajah', href: '/staff/face-enroll',  icon: ScanFace,        roles: ['staff'],                                   group: 'My Work' },
+  { label: 'Holidays',        href: '/staff/holidays',      icon: CalendarDays,    roles: ['staff'],                                   group: 'My Work' },
 
   // ── Staff: Finance ────────────────────────────────────────────────────────
   { label: 'My Payslip',    href: '/staff/payslip',       icon: Receipt,         roles: ['staff'],                                   group: 'Finance' },

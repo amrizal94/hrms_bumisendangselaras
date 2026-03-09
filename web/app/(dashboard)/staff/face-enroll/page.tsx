@@ -1,17 +1,28 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle2, Loader2, RefreshCw, ScanFace, ShieldCheck } from 'lucide-react'
+import { CheckCircle2, Clock, Loader2, RefreshCw, ScanFace, ShieldCheck } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { FaceCamera } from '@/components/face/face-camera'
 import { useMyFaceStatus, useSelfEnrollFace } from '@/hooks/use-face-data'
+
+const COOLDOWN_DAYS = 30
+
+// Returns how many days remain in cooldown (0 = can re-enroll)
+function cooldownDaysLeft(enrolledAt: string | null): number {
+  if (!enrolledAt) return 0
+  const daysSince = Math.floor((Date.now() - new Date(enrolledAt).getTime()) / 86_400_000)
+  return Math.max(0, COOLDOWN_DAYS - daysSince)
+}
 
 // ── Status banner ─────────────────────────────────────────────────────────────
 
 function StatusBanner({ enrolled, enrolledAt }: { enrolled: boolean; enrolledAt: string | null }) {
   const fmtDate = (iso: string) =>
     new Date(iso).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+
+  const daysLeft = cooldownDaysLeft(enrolledAt)
 
   if (enrolled) {
     return (
@@ -22,7 +33,14 @@ function StatusBanner({ enrolled, enrolledAt }: { enrolled: boolean; enrolledAt:
           {enrolledAt && (
             <p className="text-xs text-green-700 mt-0.5">Didaftarkan pada {fmtDate(enrolledAt)}</p>
           )}
-          <p className="text-xs text-green-700 mt-0.5">Kamu dapat mendaftarkan ulang kapan saja di bawah ini.</p>
+          {daysLeft > 0 ? (
+            <p className="text-xs text-amber-700 mt-0.5 flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              Dapat didaftarkan ulang dalam {daysLeft} hari lagi
+            </p>
+          ) : (
+            <p className="text-xs text-green-700 mt-0.5">Kamu dapat mendaftarkan ulang di bawah ini.</p>
+          )}
         </div>
       </div>
     )
@@ -52,6 +70,8 @@ export default function FaceEnrollPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   const status = statusData?.data
+  const daysLeft = cooldownDaysLeft(status?.enrolled_at ?? null)
+  const inCooldown = status?.enrolled && daysLeft > 0
 
   function handleCapture(detection: { descriptor: number[] }, snapshot: string) {
     setCaptured({ descriptor: detection.descriptor, snapshot })
@@ -117,11 +137,18 @@ export default function FaceEnrollPage() {
                 {status?.enrolled ? 'Perbarui Wajah' : 'Daftarkan Wajah'}
               </h2>
               <p className="text-xs text-muted-foreground mt-1">
-                Posisikan wajahmu di tengah kamera, pastikan pencahayaan cukup.
+                {inCooldown
+                  ? `Pendaftaran ulang tersedia dalam ${daysLeft} hari. Hubungi admin jika perlu reset lebih awal.`
+                  : 'Posisikan wajahmu di tengah kamera, pastikan pencahayaan cukup.'}
               </p>
             </div>
 
-            {captured ? (
+            {inCooldown ? (
+              <div className="flex flex-col items-center gap-3 py-8 text-muted-foreground">
+                <Clock className="w-10 h-10 text-amber-400" />
+                <p className="text-sm text-center">Fitur pendaftaran ulang terkunci selama {daysLeft} hari ke depan.</p>
+              </div>
+            ) : captured ? (
               /* Preview after capture */
               <div className="flex flex-col items-center gap-4">
                 <div className="relative rounded-xl overflow-hidden border w-[320px] h-[240px]">
