@@ -7,7 +7,7 @@
 # Requires:
 #   - aaPanel installed (PHP 8.3, PostgreSQL, Redis, Node.js 20)
 #   - SSH key sudah di-add ke GitHub deploy keys
-#   - Repo: git@github.com:arimrzl/bsshrms.git (atau sesuai repo kamu)
+#   - Repo: https://github.com/amrizal94/hrms_bumisendangselaras.git (atau sesuai repo kamu)
 # ─────────────────────────────────────────────────────────────────
 
 set -e
@@ -20,7 +20,7 @@ NPM="$NODE_BIN/npm"
 export PATH="$NODE_BIN:$PATH"
 
 APP_DIR="/www/wwwroot/bsshrms"
-REPO="git@github.com:arimrzl/bsshrms.git"
+REPO="https://github.com/amrizal94/hrms_bumisendangselaras.git"
 
 echo "======================================"
 echo "   BSS HRMS — Server Setup"
