@@ -35,7 +35,7 @@ export function PayslipDetailDialog({ record, onOpenChange }: Props) {
 
   const emp = record.employee
   const company = {
-    name:    settingsData?.data.company['company.name']    || 'Artech HRM',
+    name:    settingsData?.data.company['company.name']    || 'BSS HRMS',
     address: settingsData?.data.company['company.address'] || undefined,
     phone:   settingsData?.data.company['company.phone']   || undefined,
     email:   settingsData?.data.company['company.email']   || undefined,

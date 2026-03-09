@@ -183,13 +183,13 @@ function printHtml(html: string) {
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
-export function printPayslip(record: PayrollRecord, company: CompanyInfo = { name: 'Artech HRM' }) {
+export function printPayslip(record: PayrollRecord, company: CompanyInfo = { name: 'BSS HRMS' }) {
   printHtml(buildSingleHtml(record, company))
 }
 
 export function printPayslips(
   records: PayrollRecord[],
-  company: CompanyInfo = { name: 'Artech HRM' },
+  company: CompanyInfo = { name: 'BSS HRMS' },
   periodLabel = '',
 ) {
   if (records.length === 0) return

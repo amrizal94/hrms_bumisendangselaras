@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
-  allowedDevOrigins: ['hrm.amrzaki.online', 'apihrm.amrzaki.online'],
+  allowedDevOrigins: ['hrms.bumisendangselaras.co.id'],
 
   // Prevent proxy/CDN caching of auth pages.
   // "private" tells shared caches (Nginx proxy_cache, CDNs) they MUST NOT store the response.
