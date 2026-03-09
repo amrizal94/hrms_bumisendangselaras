@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { ROLE_ROUTES } from '@/lib/constants'
 import { useAuthStore } from '@/store/auth-store'
@@ -14,6 +15,7 @@ import type { ApiResponse, User } from '@/types/auth'
 
 export default function ChangePasswordPage() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { user, setUser } = useAuthStore()
 
   const [password, setPassword]             = useState('')
@@ -44,8 +46,9 @@ export default function ChangePasswordPage() {
       })
       if (!data.success) throw new Error(data.message)
 
-      // Update stored user — must_change_password is now false
+      // Update stored user + invalidate React Query cache so DashboardLayout re-fetches fresh data
       setUser(data.data!.user)
+      await queryClient.invalidateQueries({ queryKey: ['me'] })
 
       const dest = data.data!.user.role ? ROLE_ROUTES[data.data!.user.role] ?? '/' : '/'
       router.replace(dest)
