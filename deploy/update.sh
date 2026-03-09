@@ -56,16 +56,18 @@ $NPM install
 $NPM run build
 # Copy static & public ke standalone dir (diperlukan untuk output: standalone)
 cp -r .next/static .next/standalone/.next/static
-cp -r public .next/standalone/public
+# Gunakan cp -r public/. agar konten public/ (termasuk models/) selalu ter-copy
+# tanpa membuat nested public/public/ pada deploy berikutnya
+mkdir -p .next/standalone/public
+cp -r public/. .next/standalone/public/
 
 # Pastikan Nginx dapat serve public/ files langsung (logo, favicon, dll.)
 # Next.js standalone server.js TIDAK serve public/ — semua route diredirect ke /login
 # File ini idempotent: tidak berubah jika sudah ada
 NGINX_EXT_DIR="/www/server/panel/vhost/nginx/extension/hrms.bumisendangselaras.co.id"
 STATIC_CONF="$NGINX_EXT_DIR/static-assets.conf"
-if [ ! -f "$STATIC_CONF" ]; then
-    mkdir -p "$NGINX_EXT_DIR"
-    cat > "$STATIC_CONF" << 'NGINX_EOF'
+mkdir -p "$NGINX_EXT_DIR"
+cat > "$STATIC_CONF" << 'NGINX_EOF'
 # Serve Next.js public/ static assets directly (bypass Next.js 307 redirect)
 location ~* ^/(logo\.png|favicon\.ico|icon\.png|.*\.svg|.*\.webp)$ {
     root /www/wwwroot/bsshrms/web/.next/standalone/public;
@@ -74,9 +76,17 @@ location ~* ^/(logo\.png|favicon\.ico|icon\.png|.*\.svg|.*\.webp)$ {
     add_header X-Content-Type-Options "nosniff";
     try_files $uri =404;
 }
+
+# Serve face detection models directly (large binary files, bypass Next.js)
+location ^~ /models/ {
+    root /www/wwwroot/bsshrms/web/.next/standalone/public;
+    expires 7d;
+    add_header Cache-Control "public, max-age=604800";
+    add_header X-Content-Type-Options "nosniff";
+    try_files $uri =404;
+}
 NGINX_EOF
-    nginx -s reload
-fi
+nginx -s reload
 
 # ── 4. Restart PM2 ───────────────────────────────────────────────
 echo "[4/4] Restart PM2..."
