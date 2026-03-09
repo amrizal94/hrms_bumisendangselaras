@@ -46,9 +46,10 @@ export default function ChangePasswordPage() {
       })
       if (!data.success) throw new Error(data.message)
 
-      // Update stored user + invalidate React Query cache so DashboardLayout re-fetches fresh data
+      // Update Zustand store and React Query cache immediately with fresh user data
+      // (setQueryData prevents DashboardLayout from seeing stale must_change_password: true)
       setUser(data.data!.user)
-      await queryClient.invalidateQueries({ queryKey: ['me'] })
+      queryClient.setQueryData(['me'], data.data!.user)
 
       const dest = data.data!.user.role ? ROLE_ROUTES[data.data!.user.role] ?? '/' : '/'
       router.replace(dest)
