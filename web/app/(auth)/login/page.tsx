@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { LoginForm } from './login-form'
 
 export const dynamic = 'force-dynamic'
@@ -62,7 +61,8 @@ export default async function LoginPage() {
         {/* Logo & Title */}
         <div className="text-center space-y-2">
           <div className="mx-auto w-16 h-16 flex items-center justify-center">
-            <Image src="/logo.png" alt="BSS HRMS" width={64} height={64} className="object-contain" priority />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="BSS HRMS" width={64} height={64} className="object-contain" />
           </div>
           <h1 className="text-3xl font-bold text-slate-900">BSS HRMS</h1>
           <p className="text-slate-500 text-sm">Human Resource Management System</p>
