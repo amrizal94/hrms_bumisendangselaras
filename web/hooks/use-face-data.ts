@@ -52,11 +52,14 @@ export function useAuditLogs(params?: { action?: string; from?: string; to?: str
 
 export function useFaceAttendance() {
   const qc = useQueryClient()
+  const invalidateAttendance = () => {
+    qc.invalidateQueries({ queryKey: ['attendance-today'] })
+    qc.invalidateQueries({ queryKey: ['my-attendance'] })
+    qc.invalidateQueries({ queryKey: ['attendance-summary'] })
+  }
   return useMutation({
     mutationFn: faceAttendance,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['attendance-today'] })
-      qc.invalidateQueries({ queryKey: ['attendance-my'] })
-    },
+    onSuccess: invalidateAttendance,
+    onError: invalidateAttendance,
   })
 }
