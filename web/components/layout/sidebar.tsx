@@ -144,8 +144,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-6 border-b border-slate-700" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)', paddingBottom: '1.25rem' }}>
+        {/* Logo — height must match header (h-16 = 4rem) on desktop; grows by safe-area-inset-top on iOS PWA */}
+        <div className="flex items-center gap-3 px-6 border-b border-slate-700" style={{ minHeight: '4rem', paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)', paddingBottom: '0.75rem' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="BSS HRMS" className="w-8 h-8 rounded-lg object-contain" />
           <span className="text-lg font-bold tracking-tight">BSS HRMS</span>
