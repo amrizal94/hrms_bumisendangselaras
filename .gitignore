@@ -1,0 +1,80 @@
+# ── Laravel Backend ───────────────────────────────────────────────
+backend/.env
+backend/.env.*
+!backend/.env.example
+backend/vendor/
+backend/node_modules/
+backend/storage/app/public/*
+!backend/storage/app/public/.gitkeep
+backend/storage/logs/*
+!backend/storage/logs/.gitkeep
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+backend/public/storage
+backend/public/hot
+backend/*.zip
+backend/build-deploy.ps1
+
+# ── Next.js Web ───────────────────────────────────────────────────
+web/.env
+web/.env.*
+!web/.env.example
+web/.env.local
+web/node_modules/
+web/.next/
+web/out/
+web/*.zip
+web/deploy-package/server.js
+web/build-deploy.ps1
+
+# ── Flutter Mobile ────────────────────────────────────────────────
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/build/
+mobile/android/.gradle/
+mobile/android/app/google-services.json
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/ios/Flutter/Flutter.framework
+mobile/ios/Flutter/Flutter.podspec
+mobile/*.iml
+mobile/android/local.properties
+
+# ── Firebase / Google Services ────────────────────────────────────
+firebase-service-account.json
+google-services.json
+GoogleService-Info.plist
+
+# ── Face Service ──────────────────────────────────────────────────
+face-service/node_modules/
+face-service/.env
+face-service/.env.*
+
+# ── Docker ────────────────────────────────────────────────────────
+docker/.env
+
+# ── OS / IDE ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+.idea/
+.vscode/settings.json
+*.iml
+
+# ── Misc ──────────────────────────────────────────────────────────
+output/
+*.zip
+credentials.md
+*.PDF
+*.pdf
+Screenshot_*.png
+*.jpg
+*.jpeg
+*.png
+!BSS Logo.png
+!web/public/*.png
+!web/public/*.ico
+!web/public/*.svg
+!mobile/assets/images/logo.png

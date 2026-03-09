@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp:*)",
+      "Bash(xargs grep:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(gh auth:*)",
+      "Bash(git:*)",
+      "Bash(\"C:/Users/KK/OneDrive/Documents/Project/hrms_bumisendangselaras/backend/.env.example\":*)",
+      "Bash(\"C:/Users/KK/OneDrive/Documents/Project/hrms_bumisendangselaras/web/.env.example\":*)"
+    ]
+  }
+}

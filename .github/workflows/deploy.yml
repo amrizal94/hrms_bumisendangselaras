@@ -1,0 +1,39 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: [main]
+    types: [completed]
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          timeout: 300s
+          script: |
+            set -e
+            cd /www/wwwroot/bsshrms
+            bash deploy/update.sh
+
+      - name: Notify success
+        if: success()
+        run: |
+          echo "✅ BSS HRMS deployed commit ${{ github.event.workflow_run.head_sha }} to production"
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "❌ BSS HRMS deploy failed for commit ${{ github.event.workflow_run.head_sha }}"
+          exit 1
