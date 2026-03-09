@@ -122,7 +122,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
-  const DASHBOARD_HREFS = new Set(['/admin', '/hr', '/staff', '/manager', '/director'])
+  const DASHBOARD_HREFS = new Set(['/admin', '/hr', '/staff', '/manager', '/director', '/admin/finance'])
 
   return (
     <>
