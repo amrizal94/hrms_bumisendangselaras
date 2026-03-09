@@ -239,9 +239,19 @@ class FaceDataController extends Controller
             ], 422);
         }
 
-        // Early check: if the requesting user has no face enrolled, return friendly error
+        // This endpoint is authenticated — verify face against the logged-in user's own data only.
+        // Global search would risk false-matches to other enrolled employees.
         $userEmployee = $request->user()->employee;
-        if ($userEmployee && !FaceData::where('employee_id', $userEmployee->id)->where('is_active', true)->exists()) {
+        if (!$userEmployee) {
+            return response()->json(['success' => false, 'message' => 'Employee profile not found.'], 422);
+        }
+
+        $myFaceData = FaceData::where('employee_id', $userEmployee->id)
+            ->where('is_active', true)
+            ->with(['employee.user', 'employee.department'])
+            ->first();
+
+        if (!$myFaceData) {
             return response()->json([
                 'success'    => false,
                 'message'    => 'Wajah kamu belum terdaftar. Daftarkan wajah terlebih dahulu.',
@@ -249,12 +259,15 @@ class FaceDataController extends Controller
             ], 422);
         }
 
-        // Identify face
-        $identifyResult = $this->identifyDescriptor($validated['descriptor']);
+        // Verify descriptor matches the logged-in user's own face
+        $stored   = $myFaceData->getDescriptorArray();
+        $distance = count($stored) === 128
+            ? FaceData::euclideanDistance($validated['descriptor'], $stored)
+            : PHP_FLOAT_MAX;
 
-        if (!$identifyResult) {
+        if ($distance >= self::THRESHOLD) {
             AuditLog::record('face.attendance.no_match', $request,
-                ['action' => $validated['action']]
+                ['action' => $validated['action'], 'distance' => round($distance, 4)]
             );
             return response()->json([
                 'success' => false,
@@ -262,7 +275,13 @@ class FaceDataController extends Controller
             ], 404);
         }
 
-        $employee = $identifyResult['face_data']->employee;
+        $identifyResult = [
+            'face_data'  => $myFaceData,
+            'distance'   => $distance,
+            'confidence' => round((1 - $distance / self::THRESHOLD) * 100, 1),
+        ];
+
+        $employee = $userEmployee;
         $today    = Carbon::today();
         $now      = Carbon::now();
         $action   = $validated['action'];
