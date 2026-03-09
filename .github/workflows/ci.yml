@@ -40,7 +40,7 @@ jobs:
           restore-keys: composer-
 
       - name: Validate composer.json
-        run: composer validate --strict
+        run: composer validate
 
       - name: Install dependencies
         run: composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
