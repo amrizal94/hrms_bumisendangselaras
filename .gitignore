@@ -43,6 +43,7 @@ mobile/android/local.properties
 
 # ── Firebase / Google Services ────────────────────────────────────
 firebase-service-account.json
+*firebase-adminsdk*.json
 google-services.json
 GoogleService-Info.plist
 
