@@ -19,7 +19,7 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Handle 401 globally — skip login endpoint to avoid redirect loop
+// Handle errors globally — extract backend message for user-friendly display
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -27,6 +27,11 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !isLoginEndpoint) {
       Cookies.remove(TOKEN_KEY)
       window.location.href = '/login'
+    }
+    // Replace raw axios message with backend's message if available
+    const backendMessage = error.response?.data?.message
+    if (backendMessage) {
+      error.message = backendMessage
     }
     return Promise.reject(error)
   }

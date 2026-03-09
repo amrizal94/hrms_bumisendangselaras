@@ -22,7 +22,7 @@ class AuthController extends Controller
         if (!Auth::attempt($credentials)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid credentials. Please check your email and password.',
+                'message' => 'Email atau password salah. Periksa kembali dan coba lagi.',
             ], 401);
         }
 
@@ -32,7 +32,7 @@ class AuthController extends Controller
             Auth::logout();
             return response()->json([
                 'success' => false,
-                'message' => 'Your account has been deactivated. Please contact administrator.',
+                'message' => 'Akun Anda belum diaktifkan. Hubungi administrator untuk mengaktifkan akun.',
             ], 403);
         }
 
