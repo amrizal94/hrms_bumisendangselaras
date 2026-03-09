@@ -52,6 +52,13 @@ chmod -R 775 "$APP_DIR/backend/storage/"
 echo "[3/4] Frontend build..."
 export PATH="/www/server/nodejs/v20.12.2/bin:$PATH"
 cd "$APP_DIR/web"
+# If Next.js version in package.json differs from installed, force reinstall
+INSTALLED_NEXT=$(node -e "try{require('./node_modules/next/package.json').version}catch(e){echo 0}" 2>/dev/null || echo "0")
+WANTED_NEXT=$(node -e "console.log(require('./package.json').dependencies.next)" 2>/dev/null || echo "0")
+if [ "$INSTALLED_NEXT" != "$WANTED_NEXT" ]; then
+  echo "  Next.js version mismatch ($INSTALLED_NEXT vs $WANTED_NEXT), reinstalling..."
+  rm -f package-lock.json
+fi
 $NPM install
 $NPM run build
 # Copy static & public ke standalone dir (diperlukan untuk output: standalone)
