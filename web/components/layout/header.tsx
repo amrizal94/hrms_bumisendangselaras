@@ -28,7 +28,8 @@ export function Header({ title, onMenuClick }: { title: string; onMenuClick?: ()
   const { mutate: logout, isPending } = useLogout()
 
   return (
-    <header className="h-16 border-b bg-white px-4 md:px-6 flex items-center justify-between shrink-0">
+    <header className="border-b bg-white px-4 md:px-6 shrink-0" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <div className="h-16 flex items-center justify-between">
       <div className="flex items-center gap-3">
         {/* Hamburger — mobile only */}
         <Button
@@ -93,6 +94,7 @@ export function Header({ title, onMenuClick }: { title: string; onMenuClick?: ()
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+    </div>
     </header>
   )
 }

@@ -51,7 +51,7 @@ export function DashboardLayout({ children, title, allowedRoles }: DashboardLayo
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 flex flex-col min-w-0">
         <Header title={title} onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 p-4 md:p-6 overflow-auto">{children}</main>
+        <main className="flex-1 p-4 md:p-6 overflow-auto" style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>{children}</main>
       </div>
     </div>
   )

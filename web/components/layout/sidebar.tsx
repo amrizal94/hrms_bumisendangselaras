@@ -145,7 +145,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-700">
+        <div className="flex items-center gap-3 px-6 border-b border-slate-700" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)', paddingBottom: '1.25rem' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="BSS HRMS" className="w-8 h-8 rounded-lg object-contain" />
           <span className="text-lg font-bold tracking-tight">BSS HRMS</span>
